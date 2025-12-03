@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unified Settings & Permissions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9; /* Light grey background like screenshot */
+        }
+
+        /* --- FIXED TOGGLE SWITCH CSS --- */
+        /* The container for the toggle */
+        .toggle-checkbox {
+            appearance: none;
+            display: none;
+        }
+        
+        .toggle-label {
+            width: 44px;
+            height: 24px;
+            background: #cbd5e1; /* Gray-300 */
+            border-radius: 9999px;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .toggle-label::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease-in-out;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        /* Checked State */
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #3b82f6; /* Blue-500 */
+        }
+
+        .toggle-checkbox:checked + .toggle-label::after {
+            transform: translateX(20px);
+        }
+
+        /* --- TABS SCROLLBAR --- */
+        .tabs-container::-webkit-scrollbar {
+            height: 4px;
+        }
+        .tabs-container::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 4px;
+        }
+        
+        .bucket-card {
+            transition: all 0.2s ease;
+        }
+        .bucket-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+        }
+
+        /* Type Badges */
+        .badge-action {
+            background-color: #eff6ff;
+            color: #1d4ed8;
+            border: 1px solid #dbeafe;
+        }
+        .badge-pref {
+            background-color: #fdf2f8;
+            color: #be185d;
+            border: 1px solid #fce7f3;
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <!-- Top Admin Header -->
+    <header class="bg-white border-b border-slate-200">
+        <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <h1 class="text-lg font-bold text-slate-700">Client Settings</h1>
+                <span class="text-slate-300">|</span>
+                <p class="text-sm text-slate-500">Managing: <span class="font-semibold text-slate-800">AutoCompany Inc.</span></p>
+            </div>
+            <div class="flex items-center gap-3">
+                <button class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-bell"></i></button>
+                <div class="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-xs">AD</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- TAB NAVIGATION (Replicating Screenshot) -->
+    <div class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-20">
+        <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="tabs-container flex space-x-6 overflow-x-auto whitespace-nowrap py-3">
+                <!-- Inactive Tabs -->
+                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors">Client Account</a>
+                
+                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors">Manage Users</a>
+                
+                <!-- Other Tabs -->
+                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors">Departments</a>
+                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors">Location</a>
+                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors">Links</a>
+                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors">Customization</a>
+                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors">Verifications</a>
+                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors">Candidates</a>
+                
+                <!-- Active Tab (Preference) - Content Moved Here -->
+                <a href="#" class="text-sm font-bold text-blue-600 border-b-2 border-blue-600 pb-2.5 -mb-3">Preference</a>
+                
+                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors">ATS</a>
+                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors">Packages</a>
+                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors">Ala Carte</a>
+                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors">Integrations</a>
+                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors">Tags</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toolbar for Content -->
+    <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+            <div>
+                <h2 class="text-2xl font-bold text-slate-800">Permissions & Preferences Dashboard</h2>
+                <p class="text-sm text-slate-500 mt-1">Consolidated view of "Allowed Actions" and "Preferences" configured for this client.</p>
+            </div>
+            
+            <div class="flex gap-3">
+                 <div class="relative">
+                    <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" placeholder="Search config..." class="pl-10 pr-4 py-2 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm w-full md:w-64 shadow-sm">
+                </div>
+                <button class="bg-slate-800 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-slate-700 transition shadow-sm flex items-center gap-2">
+                    <i class="fa-solid fa-save"></i> Save Changes
+                </button>
+            </div>
+        </div>
+
+        <!-- Masonry-like Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 items-start">
+
+            <!-- BUCKET 1: Applicant Journey -->
+            <div class="bucket-card bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden col-span-1 md:col-span-2 xl:col-span-1">
+                <div class="p-4 border-b border-slate-100 bg-slate-50 flex items-center gap-3">
+                    <div class="p-2 bg-blue-100 text-blue-600 rounded-lg">
+                        <i class="fa-solid fa-user-check"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800">Applicant Journey</h3>
+                </div>
+                
+                <div class="p-5 space-y-6">
+                    <!-- Actions Sub-group -->
+                    <div>
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="badge-action text-[10px] px-2 py-0.5 rounded uppercase font-bold tracking-wider">Allowed Actions</span>
+                        </div>
+                        <div class="space-y-4">
+                            <!-- Toggle 1 -->
+                            <div class="flex items-center justify-between group">
+                                <span class="text-sm text-slate-700 group-hover:text-blue-600 transition">Applicant Profile Access</span>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="toggle-prof" class="toggle-checkbox" checked />
+                                    <label for="toggle-prof" class="toggle-label"></label>
+                                </div>
+                            </div>
+                            <!-- Toggle 2 -->
+                            <div class="flex items-center justify-between group">
+                                <span class="text-sm text-slate-700 group-hover:text-blue-600 transition">Applicant Activity Feed</span>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="toggle-feed" class="toggle-checkbox" checked />
+                                    <label for="toggle-feed" class="toggle-label"></label>
+                                </div>
+                            </div>
+                            <!-- Toggle 3 -->
+                            <div class="flex items-center justify-between group">
+                                <span class="text-sm text-slate-700 group-hover:text-blue-600 transition">Withdraw & Re-activate Applicant</span>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="toggle-withdraw" class="toggle-checkbox" />
+                                    <label for="toggle-withdraw" class="toggle-label"></label>
+                                </div>
+                            </div>
+                            <!-- Toggle 4 -->
+                            <div class="flex items-center justify-between group">
+                                <span class="text-sm text-slate-700 group-hover:text-blue-600 transition">View Verified Profile</span>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="toggle-verified" class="toggle-checkbox" checked />
+                                    <label for="toggle-verified" class="toggle-label"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BUCKET 2: Health & Screening Config -->
+            <div class="bucket-card bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden col-span-1 md:col-span-2 xl:col-span-2">
+                <div class="p-4 border-b border-slate-100 bg-slate-50 flex items-center gap-3">
+                    <div class="p-2 bg-emerald-100 text-emerald-600 rounded-lg">
+                        <i class="fa-solid fa-heart-pulse"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800">Health & Screening Configuration</h3>
+                </div>
+                
+                <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Left Col: Actions -->
+                    <div>
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="badge-action text-[10px] px-2 py-0.5 rounded uppercase font-bold tracking-wider">Allowed Actions</span>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between group">
+                                <span class="text-sm text-slate-700">Add Health Package</span>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="toggle-health-pkg" class="toggle-checkbox" checked />
+                                    <label for="toggle-health-pkg" class="toggle-label"></label>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between group">
+                                <span class="text-sm text-slate-700">Send Invite for New Check</span>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="toggle-invite" class="toggle-checkbox" checked />
+                                    <label for="toggle-invite" class="toggle-label"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Col: Preferences -->
+                    <div class="border-l border-slate-100 pl-0 md:pl-8">
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="badge-pref text-[10px] px-2 py-0.5 rounded uppercase font-bold tracking-wider">Preferences</span>
+                        </div>
+                        <div class="space-y-5">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Health Screening Flags</label>
+                                <p class="text-xs text-slate-500 mb-2">If 'Yes', client can add flags to health checks visible on dashboard.</p>
+                                <select class="w-full bg-slate-50 border border-slate-300 text-slate-700 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 p-2.5">
+                                    <option>Yes</option>
+                                    <option>No</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Donor Pass Expiry</label>
+                                <p class="text-xs text-slate-500 mb-2">Days before the donor pass expires (1-90 days).</p>
+                                <div class="flex items-center gap-2">
+                                    <input type="number" value="5" min="1" max="90" class="bg-slate-50 border border-slate-300 text-slate-700 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 p-2 w-24">
+                                    <span class="text-sm text-slate-600">days</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BUCKET 3: Analytics & Reporting -->
+            <div class="bucket-card bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden col-span-1">
+                <div class="p-4 border-b border-slate-100 bg-slate-50 flex items-center gap-3">
+                    <div class="p-2 bg-purple-100 text-purple-600 rounded-lg">
+                        <i class="fa-solid fa-chart-pie"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800">Analytics & Reporting</h3>
+                </div>
+                <div class="p-5 space-y-6">
+                     <div>
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="badge-action text-[10px] px-2 py-0.5 rounded uppercase font-bold tracking-wider">Allowed Actions</span>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between group">
+                                <div>
+                                    <span class="block text-sm text-slate-700 font-medium">Chart Adjudication</span>
+                                    <span class="text-[10px] text-slate-400">View adjudication statistics</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="toggle-chart-adj" class="toggle-checkbox" checked />
+                                    <label for="toggle-chart-adj" class="toggle-label"></label>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between group">
+                                <div>
+                                    <span class="block text-sm text-slate-700 font-medium">Chart Candidate Exp.</span>
+                                    <span class="text-[10px] text-slate-400">View satisfaction metrics</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="toggle-chart-exp" class="toggle-checkbox" checked />
+                                    <label for="toggle-chart-exp" class="toggle-label"></label>
+                                </div>
+                            </div>
+                             <div class="flex items-center justify-between group">
+                                <span class="text-sm text-slate-700 font-medium">Chart Comm. Effectiveness</span>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="toggle-chart-comm" class="toggle-checkbox" checked />
+                                    <label for="toggle-chart-comm" class="toggle-label"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BUCKET 4: Compliance & Integrations -->
+            <div class="bucket-card bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden col-span-1 md:col-span-2">
+                <div class="p-4 border-b border-slate-100 bg-slate-50 flex items-center gap-3">
+                    <div class="p-2 bg-amber-100 text-amber-600 rounded-lg">
+                        <i class="fa-solid fa-scale-balanced"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800">Compliance & Integrations</h3>
+                </div>
+                
+                <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-8">
+                     <!-- Integration Actions -->
+                     <div>
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="badge-action text-[10px] px-2 py-0.5 rounded uppercase font-bold tracking-wider">Integrations Actions</span>
+                        </div>
+                        <div class="space-y-4">
+                             <div class="flex items-center justify-between group">
+                                <span class="text-sm text-slate-700">Bullhorn Intelli Order</span>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="toggle-bullhorn" class="toggle-checkbox" />
+                                    <label for="toggle-bullhorn" class="toggle-label"></label>
+                                </div>
+                            </div>
+                             <div class="flex items-center justify-between group">
+                                <span class="text-sm text-slate-700">Add/Edit Department</span>
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="toggle-dept" class="toggle-checkbox" checked />
+                                    <label for="toggle-dept" class="toggle-label"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Compliance Preferences -->
+                    <div class="border-l border-slate-100 pl-0 md:pl-8">
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="badge-pref text-[10px] px-2 py-0.5 rounded uppercase font-bold tracking-wider">Compliance Preferences</span>
+                        </div>
+                        <div class="space-y-5">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Show Death Master File Flag</label>
+                                <p class="text-xs text-slate-500 mb-2">Researcher will send Death Master flag value via Notes.</p>
+                                <select class="w-full bg-slate-50 border border-slate-300 text-slate-700 text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 p-2.5">
+                                    <option>Yes</option>
+                                    <option selected>No</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Share Alias Address</label>
+                                <p class="text-xs text-slate-500 mb-2">Share City, County, State of alias address via Notes.</p>
+                                <select class="w-full bg-slate-50 border border-slate-300 text-slate-700 text-sm rounded-lg focus:ring-amber-500 focus:border-amber-500 p-2.5">
+                                    <option>Yes</option>
+                                    <option selected>No</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
