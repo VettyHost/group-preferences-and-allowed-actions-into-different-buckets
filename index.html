@@ -83,6 +83,12 @@
             border-color: transparent;
             cursor: not-allowed;
         }
+        
+        /* Active Input Styling (when unlocked) */
+        input:not(:disabled), select:not(:disabled) {
+            background-color: #ffffff;
+            border-color: #3b82f6; /* Blue-500 */
+        }
 
         /* Highlight Class for Search */
         .highlight-orange {
@@ -143,20 +149,20 @@
                     <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
                     <input type="text" id="searchInput" placeholder="Search By" class="pl-10 pr-4 py-2 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm w-64 shadow-sm">
                 </div>
-                <button class="bg-slate-800 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-slate-700 shadow-sm" onclick="alert('All changes saved successfully!')">
+                <button id="saveAllBtn" class="bg-slate-800 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-slate-700 shadow-sm transition-colors duration-200">
                     <i class="fa-solid fa-floppy-disk mr-2"></i>Save All Changes
                 </button>
             </div>
         </div>
 
-        <!-- Vertical Stack (Changed from Grid) -->
+        <!-- Vertical Stack -->
         <div class="flex flex-col gap-6" id="bucketsContainer">
 
             <!-- BUCKET 1: APPLICANT JOURNEY & CANDIDATE MANAGEMENT -->
             <div class="bucket-card bg-white rounded-xl shadow-sm border border-slate-200">
                 <div class="p-4 border-b border-slate-100 bg-slate-50 flex items-center gap-3">
                     <div class="section-header-icon bg-blue-100 text-blue-600"><i class="fa-solid fa-user-check"></i></div>
-                    <h3 class="font-bold text-slate-800">1. Applicant Journey & Candidate Mgmt</h3>
+                    <h3 class="font-bold text-slate-800">1. Applicant Journey & Candidate Management</h3>
                 </div>
                 <div class="p-5">
                     <!-- Permissions -->
@@ -471,6 +477,7 @@
     <script>
         // --- 1. Edit/Unlock Functionality ---
         const editButtons = document.querySelectorAll('.edit-btn');
+        const saveAllBtn = document.getElementById('saveAllBtn');
         
         editButtons.forEach(btn => {
             btn.addEventListener('click', function() {
@@ -478,25 +485,51 @@
                 const row = this.closest('.pref-row');
                 const input = row.querySelector('input, select');
                 
-                // Toggle State
+                // Unlock for Editing
                 if (input.disabled) {
-                    // Unlock
                     input.disabled = false;
                     input.focus();
-                    this.textContent = 'Done';
-                    this.classList.remove('text-blue-600', 'hover:text-blue-800');
-                    this.classList.add('text-green-600', 'hover:text-green-800');
-                } else {
-                    // Lock (Save locally)
-                    input.disabled = true;
-                    this.textContent = 'Edit';
-                    this.classList.remove('text-green-600', 'hover:text-green-800');
-                    this.classList.add('text-blue-600', 'hover:text-blue-800');
+                    
+                    // Hide the Edit button while editing (per user request)
+                    this.style.visibility = 'hidden'; 
                 }
             });
         });
 
-        // --- 2. Search & Highlight Functionality ---
+        // --- 2. Save All Changes Functionality ---
+        saveAllBtn.addEventListener('click', function() {
+            // Find all enabled inputs within pref-rows
+            const enabledInputs = document.querySelectorAll('.pref-row input:not(:disabled), .pref-row select:not(:disabled)');
+            
+            // Loop through them and lock them
+            enabledInputs.forEach(input => {
+                input.disabled = true;
+                
+                // Find the corresponding edit button and show it again
+                const row = input.closest('.pref-row');
+                const btn = row.querySelector('.edit-btn');
+                if(btn) {
+                    btn.style.visibility = 'visible';
+                    btn.textContent = 'Edit'; // Ensure text is reset
+                    btn.classList.remove('text-green-600', 'hover:text-green-800'); // Reset colors if changed
+                    btn.classList.add('text-blue-600', 'hover:text-blue-800');
+                }
+            });
+
+            // Feedback
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fa-solid fa-check mr-2"></i>Saved!';
+            this.classList.remove('bg-slate-800', 'hover:bg-slate-700');
+            this.classList.add('bg-green-600', 'hover:bg-green-700');
+            
+            setTimeout(() => {
+                this.innerHTML = originalText;
+                this.classList.add('bg-slate-800', 'hover:bg-slate-700');
+                this.classList.remove('bg-green-600', 'hover:bg-green-700');
+            }, 2000);
+        });
+
+        // --- 3. Search & Highlight Functionality ---
         const searchInput = document.getElementById('searchInput');
         const searchItems = document.querySelectorAll('.searchable-item span, .searchable-text');
 
