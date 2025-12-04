@@ -75,6 +75,23 @@
             justify-content: center;
             border-radius: 8px;
         }
+
+        /* Disabled Input Styling */
+        input:disabled, select:disabled {
+            background-color: #f8fafc; /* Slate-50 */
+            color: #94a3b8; /* Slate-400 */
+            border-color: transparent;
+            cursor: not-allowed;
+        }
+
+        /* Highlight Class for Search */
+        .highlight-orange {
+            background-color: #fdba74; /* Orange-300 */
+            color: #fff7ed;
+            padding: 0 2px;
+            border-radius: 2px;
+            color: #7c2d12;
+        }
     </style>
 </head>
 <body class="text-slate-800 pb-20">
@@ -124,15 +141,16 @@
             <div class="flex gap-3">
                  <div class="relative">
                     <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
-                    <input type="text" placeholder="Search keys..." class="pl-10 pr-4 py-2 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm w-64 shadow-sm">
+                    <input type="text" id="searchInput" placeholder="Search By" class="pl-10 pr-4 py-2 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm w-64 shadow-sm">
                 </div>
-                <button class="bg-slate-800 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-slate-700 shadow-sm">
+                <button class="bg-slate-800 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-slate-700 shadow-sm" onclick="alert('All changes saved successfully!')">
                     <i class="fa-solid fa-floppy-disk mr-2"></i>Save All Changes
                 </button>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <!-- Vertical Stack (Changed from Grid) -->
+        <div class="flex flex-col gap-6" id="bucketsContainer">
 
             <!-- BUCKET 1: APPLICANT JOURNEY & CANDIDATE MANAGEMENT -->
             <div class="bucket-card bg-white rounded-xl shadow-sm border border-slate-200">
@@ -142,73 +160,73 @@
                 </div>
                 <div class="p-5">
                     <!-- Permissions -->
-                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Client Permissions</h4>
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-3 mb-6">
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Allowed Actions</h4>
+                    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-4 mb-6">
                         <!-- Perm Items -->
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Export Candidates</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Add Candidate</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Applicant Actions</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Applicant Activity</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Applicant Profile</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Verified Profile</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Withdraw/Re-activate</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Edit Custom Field</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Add Tags</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Assignee</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Candidate Listing</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Customize Verifs</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Default ATS User</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Kiosk Mode</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Manage Direct Link</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Add Addt'l Address</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Add Mock Data</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Export Candidates</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Add Candidate</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Applicant Actions</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Applicant Activity</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Applicant Profile</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Verified Profile</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Withdraw/Re-activate</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Edit Custom Field</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Add Tags</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Assignee</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Candidate Listing</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Customize Verifs</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Default ATS User</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Kiosk Mode</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Manage Direct Link</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Add Addt'l Address</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Add Mock Data</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
                     </div>
 
                     <!-- Preferences -->
                     <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 border-t border-slate-100 pt-3">Preferences</h4>
                     <div class="space-y-3">
                         <!-- Pref Row -->
-                        <div class="grid grid-cols-12 gap-4 items-center">
-                            <div class="col-span-5 text-xs font-medium text-slate-700">Client Email Comm.</div>
+                        <div class="grid grid-cols-12 gap-4 items-center pref-row">
+                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Client Email Comm.</div>
                             <div class="col-span-5">
-                                <select class="w-full text-xs border-slate-300 rounded bg-slate-50 p-1.5"><option>Yes</option><option>No</option></select>
+                                <select disabled class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"><option>Yes</option><option>No</option></select>
                             </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium">Edit</button></div>
+                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
                         </div>
-                        <div class="grid grid-cols-12 gap-4 items-center">
-                            <div class="col-span-5 text-xs font-medium text-slate-700">SSN Exception Alert</div>
+                        <div class="grid grid-cols-12 gap-4 items-center pref-row">
+                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">SSN Exception Alert</div>
                             <div class="col-span-5">
-                                <select class="w-full text-xs border-slate-300 rounded bg-slate-50 p-1.5"><option>Select...</option><option>Yes</option><option>No</option></select>
+                                <select disabled class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"><option>Select...</option><option>Yes</option><option>No</option></select>
                             </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium">Edit</button></div>
+                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
                         </div>
-                        <div class="grid grid-cols-12 gap-4 items-center">
-                            <div class="col-span-5 text-xs font-medium text-slate-700">Onboarding Notification</div>
+                        <div class="grid grid-cols-12 gap-4 items-center pref-row">
+                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Onboarding Notification</div>
                             <div class="col-span-5">
-                                <select class="w-full text-xs border-slate-300 rounded bg-slate-50 p-1.5"><option>Select...</option><option>Yes</option><option>No</option></select>
+                                <select disabled class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"><option>Select...</option><option>Yes</option><option>No</option></select>
                             </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium">Edit</button></div>
+                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
                         </div>
-                        <div class="grid grid-cols-12 gap-4 items-center">
-                            <div class="col-span-5 text-xs font-medium text-slate-700">Candidate Survey</div>
+                        <div class="grid grid-cols-12 gap-4 items-center pref-row">
+                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Candidate Survey</div>
                             <div class="col-span-5">
-                                <select class="w-full text-xs border-slate-300 rounded bg-slate-50 p-1.5"><option>Yes</option><option>No</option></select>
+                                <select disabled class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"><option>Yes</option><option>No</option></select>
                             </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium">Edit</button></div>
+                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
                         </div>
-                        <div class="grid grid-cols-12 gap-4 items-center">
-                            <div class="col-span-5 text-xs font-medium text-slate-700">Custom Defined Field</div>
+                        <div class="grid grid-cols-12 gap-4 items-center pref-row">
+                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Custom Defined Field</div>
                             <div class="col-span-5">
-                                <input type="text" placeholder="Blank" class="w-full text-xs border border-slate-300 rounded bg-slate-50 p-1.5">
+                                <input disabled type="text" placeholder="Blank" class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
                             </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium">Edit</button></div>
+                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
                         </div>
-                         <div class="grid grid-cols-12 gap-4 items-center">
-                            <div class="col-span-5 text-xs font-medium text-slate-700">Form I-9 Preference</div>
+                         <div class="grid grid-cols-12 gap-4 items-center pref-row">
+                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Form I-9 Preference</div>
                             <div class="col-span-5">
-                                <select class="w-full text-xs border-slate-300 rounded bg-slate-50 p-1.5"><option>Mandatory</option><option>Optional</option><option>Hide</option></select>
+                                <select disabled class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"><option>Mandatory</option><option>Optional</option><option>Hide</option></select>
                             </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium">Edit</button></div>
+                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
                         </div>
                     </div>
                 </div>
@@ -222,62 +240,62 @@
                 </div>
                 <div class="p-5">
                     <!-- Permissions -->
-                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Client Permissions</h4>
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-3 mb-6">
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Add Clinic Pref v2</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Modify Health Order</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">OHS Map View</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">OHS OneService</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">View Health Details</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Update Drug Results</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Supplies & Shipping</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                         <div class="flex items-center justify-between"><span class="text-xs text-slate-700">View Prices</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Allowed Actions</h4>
+                    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-4 mb-6">
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Add Clinic Pref v2</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Modify Health Order</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">OHS Map View</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">OHS OneService</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">View Health Details</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Update Drug Results</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Supplies & Shipping</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                         <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">View Prices</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
                     </div>
 
                     <!-- Preferences -->
                     <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 border-t border-slate-100 pt-3">Preferences</h4>
                     <div class="space-y-3">
-                        <div class="grid grid-cols-12 gap-4 items-center">
-                            <div class="col-span-5 text-xs font-medium text-slate-700">Support Phone</div>
+                        <div class="grid grid-cols-12 gap-4 items-center pref-row">
+                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Support Phone</div>
                             <div class="col-span-5">
-                                <input type="text" placeholder="(555) 000-0000" class="w-full text-xs border border-slate-300 rounded bg-slate-50 p-1.5">
+                                <input disabled type="text" placeholder="(555) 000-0000" class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
                             </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium">Edit</button></div>
+                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
                         </div>
-                        <div class="grid grid-cols-12 gap-4 items-center">
-                            <div class="col-span-5 text-xs font-medium text-slate-700">OccHealth Location</div>
+                        <div class="grid grid-cols-12 gap-4 items-center pref-row">
+                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">OccHealth Location</div>
                             <div class="col-span-5">
-                                <select class="w-full text-xs border-slate-300 rounded bg-slate-50 p-1.5"><option>Candidate</option><option>Client</option></select>
+                                <select disabled class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"><option>Candidate</option><option>Client</option></select>
                             </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium">Edit</button></div>
+                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
                         </div>
-                        <div class="grid grid-cols-12 gap-4 items-center">
-                            <div class="col-span-5 text-xs font-medium text-slate-700">Health Screening Flags</div>
+                        <div class="grid grid-cols-12 gap-4 items-center pref-row">
+                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Health Screening Flags</div>
                             <div class="col-span-5">
-                                <select class="w-full text-xs border-slate-300 rounded bg-slate-50 p-1.5"><option>Yes</option><option selected>No</option></select>
+                                <select disabled class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"><option>Yes</option><option selected>No</option></select>
                             </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium">Edit</button></div>
+                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
                         </div>
-                        <div class="grid grid-cols-12 gap-4 items-center">
-                            <div class="col-span-5 text-xs font-medium text-slate-700">Donor Pass Expiry</div>
+                        <div class="grid grid-cols-12 gap-4 items-center pref-row">
+                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Donor Pass Expiry</div>
                             <div class="col-span-5">
-                                <input type="number" value="5" class="w-full text-xs border border-slate-300 rounded bg-slate-50 p-1.5">
+                                <input disabled type="number" value="5" class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
                             </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium">Edit</button></div>
+                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
                         </div>
-                         <div class="grid grid-cols-12 gap-4 items-center">
-                            <div class="col-span-5 text-xs font-medium text-slate-700">Search Radius (miles)</div>
+                         <div class="grid grid-cols-12 gap-4 items-center pref-row">
+                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Search Radius (miles)</div>
                             <div class="col-span-5">
-                                <input type="number" value="50" class="w-full text-xs border border-slate-300 rounded bg-slate-50 p-1.5">
+                                <input disabled type="number" value="50" class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
                             </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium">Edit</button></div>
+                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
                         </div>
-                        <div class="grid grid-cols-12 gap-4 items-center">
-                            <div class="col-span-5 text-xs font-medium text-slate-700">eScreen Flow Control</div>
+                        <div class="grid grid-cols-12 gap-4 items-center pref-row">
+                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">eScreen Flow Control</div>
                             <div class="col-span-5">
-                                <select class="w-full text-xs border-slate-300 rounded bg-slate-50 p-1.5"><option>API</option><option>SSO</option></select>
+                                <select disabled class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"><option>API</option><option>SSO</option></select>
                             </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium">Edit</button></div>
+                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
                         </div>
                     </div>
                 </div>
@@ -291,35 +309,35 @@
                 </div>
                 <div class="p-5">
                     <!-- Permissions -->
-                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Client Permissions</h4>
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-3 mb-6">
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Chart Adjudication</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Chart Candidate Exp.</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Chart Comm. Eff.</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Chart Finance</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Chart Geography</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Chart Overview</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Order Status Report</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">View Hist. Dash</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                         <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Bullhorn Intelli</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Allowed Actions</h4>
+                    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-4 mb-6">
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Chart Adjudication</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Chart Candidate Exp.</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Chart Comm. Eff.</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Chart Finance</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Chart Geography</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Chart Overview</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Order Status Report</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">View Hist. Dash</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                         <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Bullhorn Intelli</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
                     </div>
 
                     <!-- Preferences -->
                     <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 border-t border-slate-100 pt-3">Preferences</h4>
                      <div class="space-y-3">
-                        <div class="grid grid-cols-12 gap-4 items-center">
-                            <div class="col-span-5 text-xs font-medium text-slate-700">BG Report Download</div>
+                        <div class="grid grid-cols-12 gap-4 items-center pref-row">
+                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">BG Report Download</div>
                             <div class="col-span-5">
-                                <select class="w-full text-xs border-slate-300 rounded bg-slate-50 p-1.5"><option>Yes</option><option selected>No</option></select>
+                                <select disabled class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"><option>Yes</option><option selected>No</option></select>
                             </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium">Edit</button></div>
+                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
                         </div>
-                        <div class="grid grid-cols-12 gap-4 items-center">
-                            <div class="col-span-5 text-xs font-medium text-slate-700">Check Status Report</div>
+                        <div class="grid grid-cols-12 gap-4 items-center pref-row">
+                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Check Status Report</div>
                             <div class="col-span-5">
-                                <select class="w-full text-xs border-slate-300 rounded bg-slate-50 p-1.5"><option>Yes</option><option selected>No</option></select>
+                                <select disabled class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"><option>Yes</option><option selected>No</option></select>
                             </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium">Edit</button></div>
+                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
                         </div>
                     </div>
                 </div>
@@ -333,41 +351,41 @@
                 </div>
                 <div class="p-5">
                      <!-- Permissions -->
-                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Client Permissions</h4>
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-3 mb-6">
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Initiate Adverse</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Init Pre-Adverse</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">View Only Mode</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Onboarding Docs</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Customize Invite</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">ATS Partner Int.</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">API Mgmt List</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">I-9 Audit Trail</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Allowed Actions</h4>
+                    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-4 mb-6">
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Initiate Adverse</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Init Pre-Adverse</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">View Only Mode</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Onboarding Docs</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Customize Invite</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">ATS Partner Int.</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">API Mgmt List</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">I-9 Audit Trail</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
                     </div>
 
                     <!-- Preferences -->
                     <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 border-t border-slate-100 pt-3">Preferences</h4>
                      <div class="space-y-3">
-                         <div class="grid grid-cols-12 gap-4 items-center">
-                            <div class="col-span-5 text-xs font-medium text-slate-700">Preference Email</div>
+                         <div class="grid grid-cols-12 gap-4 items-center pref-row">
+                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Preference Email</div>
                             <div class="col-span-5">
-                                <input type="email" value="support@vetty.co" class="w-full text-xs border border-slate-300 rounded bg-slate-50 p-1.5">
+                                <input disabled type="email" value="support@vetty.co" class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
                             </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium">Edit</button></div>
+                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
                         </div>
-                        <div class="grid grid-cols-12 gap-4 items-center">
-                            <div class="col-span-5 text-xs font-medium text-slate-700">Death Master Flag</div>
+                        <div class="grid grid-cols-12 gap-4 items-center pref-row">
+                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Death Master Flag</div>
                             <div class="col-span-5">
-                                <select class="w-full text-xs border-slate-300 rounded bg-slate-50 p-1.5"><option>Yes</option><option selected>No</option></select>
+                                <select disabled class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"><option>Yes</option><option selected>No</option></select>
                             </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium">Edit</button></div>
+                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
                         </div>
-                        <div class="grid grid-cols-12 gap-4 items-center">
-                            <div class="col-span-5 text-xs font-medium text-slate-700">Share Alias Address</div>
+                        <div class="grid grid-cols-12 gap-4 items-center pref-row">
+                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Share Alias Address</div>
                             <div class="col-span-5">
-                                <select class="w-full text-xs border-slate-300 rounded bg-slate-50 p-1.5"><option>Yes</option><option selected>No</option></select>
+                                <select disabled class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"><option>Yes</option><option selected>No</option></select>
                             </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium">Edit</button></div>
+                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
                         </div>
                     </div>
                 </div>
@@ -381,30 +399,30 @@
                 </div>
                 <div class="p-5">
                     <!-- Permissions -->
-                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Client Permissions</h4>
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-3 mb-6">
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Show Charge Table</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">View Annual Salary</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">View Package List</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Show Invoices</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Allowed Actions</h4>
+                    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-4 mb-6">
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Show Charge Table</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">View Annual Salary</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">View Package List</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Show Invoices</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
                     </div>
 
                     <!-- Preferences -->
                     <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 border-t border-slate-100 pt-3">Preferences</h4>
                      <div class="space-y-3">
-                         <div class="grid grid-cols-12 gap-4 items-center">
-                            <div class="col-span-5 text-xs font-medium text-slate-700">Invoice Mail Attach</div>
+                         <div class="grid grid-cols-12 gap-4 items-center pref-row">
+                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Invoice Mail Attach</div>
                             <div class="col-span-5">
-                                <select class="w-full text-xs border-slate-300 rounded bg-slate-50 p-1.5"><option>Blank</option><option>Package</option><option>Summary</option></select>
+                                <select disabled class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"><option>Blank</option><option>Package</option><option>Summary</option></select>
                             </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium">Edit</button></div>
+                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
                         </div>
-                        <div class="grid grid-cols-12 gap-4 items-center">
-                            <div class="col-span-5 text-xs font-medium text-slate-700">Candidate Charge Table</div>
+                        <div class="grid grid-cols-12 gap-4 items-center pref-row">
+                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Candidate Charge Table</div>
                             <div class="col-span-5">
-                                <select class="w-full text-xs border-slate-300 rounded bg-slate-50 p-1.5"><option>Yes</option><option selected>No</option></select>
+                                <select disabled class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"><option>Yes</option><option selected>No</option></select>
                             </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium">Edit</button></div>
+                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
                         </div>
                     </div>
                 </div>
@@ -418,30 +436,30 @@
                 </div>
                 <div class="p-5">
                     <!-- Permissions -->
-                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Client Permissions</h4>
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-3 mb-6">
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Setting Manage Users</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">Customize Logo</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">All Permissions</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between"><span class="text-xs text-slate-700">1Service Redesign</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Allowed Actions</h4>
+                    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-4 mb-6">
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Setting Manage Users</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Customize Logo</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">All Permissions</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">1Service Redesign</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
                     </div>
 
                     <!-- Preferences -->
                     <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 border-t border-slate-100 pt-3">Preferences</h4>
                      <div class="space-y-3">
-                         <div class="grid grid-cols-12 gap-4 items-center">
-                            <div class="col-span-5 text-xs font-medium text-slate-700">Admin Email Note</div>
+                         <div class="grid grid-cols-12 gap-4 items-center pref-row">
+                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Admin Email Note</div>
                             <div class="col-span-5">
-                                <select class="w-full text-xs border-slate-300 rounded bg-slate-50 p-1.5"><option selected>Yes</option><option>No</option></select>
+                                <select disabled class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"><option selected>Yes</option><option>No</option></select>
                             </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium">Edit</button></div>
+                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
                         </div>
-                        <div class="grid grid-cols-12 gap-4 items-center">
-                            <div class="col-span-5 text-xs font-medium text-slate-700">Preference Tags</div>
+                        <div class="grid grid-cols-12 gap-4 items-center pref-row">
+                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Preference Tags</div>
                             <div class="col-span-5">
-                                <select class="w-full text-xs border-slate-300 rounded bg-slate-50 p-1.5"><option>Yes</option><option selected>No</option></select>
+                                <select disabled class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"><option>Yes</option><option selected>No</option></select>
                             </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium">Edit</button></div>
+                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
                         </div>
                     </div>
                 </div>
@@ -449,5 +467,61 @@
 
         </div>
     </div>
+
+    <script>
+        // --- 1. Edit/Unlock Functionality ---
+        const editButtons = document.querySelectorAll('.edit-btn');
+        
+        editButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Find the closest parent row
+                const row = this.closest('.pref-row');
+                const input = row.querySelector('input, select');
+                
+                // Toggle State
+                if (input.disabled) {
+                    // Unlock
+                    input.disabled = false;
+                    input.focus();
+                    this.textContent = 'Done';
+                    this.classList.remove('text-blue-600', 'hover:text-blue-800');
+                    this.classList.add('text-green-600', 'hover:text-green-800');
+                } else {
+                    // Lock (Save locally)
+                    input.disabled = true;
+                    this.textContent = 'Edit';
+                    this.classList.remove('text-green-600', 'hover:text-green-800');
+                    this.classList.add('text-blue-600', 'hover:text-blue-800');
+                }
+            });
+        });
+
+        // --- 2. Search & Highlight Functionality ---
+        const searchInput = document.getElementById('searchInput');
+        const searchItems = document.querySelectorAll('.searchable-item span, .searchable-text');
+
+        // Store original text to restore later
+        searchItems.forEach(el => {
+            el.dataset.originalText = el.textContent;
+        });
+
+        searchInput.addEventListener('input', function(e) {
+            const term = e.target.value.toLowerCase().trim();
+
+            searchItems.forEach(el => {
+                const originalText = el.dataset.originalText;
+                
+                if (term.length > 0 && originalText.toLowerCase().includes(term)) {
+                    // Highlight Match using HTML replacement
+                    // Case insensitive regex
+                    const regex = new RegExp(`(${term})`, 'gi');
+                    el.innerHTML = originalText.replace(regex, '<span class="highlight-orange">$1</span>');
+                } else {
+                    // Restore original
+                    el.textContent = originalText;
+                }
+            });
+        });
+    </script>
 </body>
 </html>
