@@ -14,43 +14,6 @@
             background-color: #f1f5f9;
         }
 
-        /* --- TOGGLE SWITCH CSS --- */
-        .toggle-checkbox {
-            appearance: none;
-            display: none;
-        }
-        
-        .toggle-label {
-            width: 36px;
-            height: 20px;
-            background: #cbd5e1;
-            border-radius: 9999px;
-            position: relative;
-            cursor: pointer;
-            transition: background-color 0.3s ease-in-out;
-        }
-
-        .toggle-label::after {
-            content: '';
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 16px;
-            height: 16px;
-            background: white;
-            border-radius: 50%;
-            transition: transform 0.3s ease-in-out;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
-        }
-
-        .toggle-checkbox:checked + .toggle-label {
-            background-color: #3b82f6;
-        }
-
-        .toggle-checkbox:checked + .toggle-label::after {
-            transform: translateX(16px);
-        }
-
         /* --- SCROLLBAR --- */
         .tabs-container::-webkit-scrollbar {
             height: 4px;
@@ -76,27 +39,79 @@
             border-radius: 8px;
         }
 
-        /* Disabled Input Styling */
+        /* Input Styling */
         input:disabled, select:disabled {
-            background-color: #f8fafc; /* Slate-50 */
-            color: #94a3b8; /* Slate-400 */
-            border-color: transparent;
+            background-color: #f8fafc;
+            color: #64748b; /* Slate-500 */
+            border-color: #e2e8f0;
             cursor: not-allowed;
         }
         
-        /* Active Input Styling (when unlocked) */
         input:not(:disabled), select:not(:disabled) {
             background-color: #ffffff;
-            border-color: #3b82f6; /* Blue-500 */
+            border-color: #3b82f6;
         }
 
         /* Highlight Class for Search */
         .highlight-orange {
-            background-color: #fdba74; /* Orange-300 */
-            color: #fff7ed;
+            background-color: #fdba74;
+            color: #7c2d12;
             padding: 0 2px;
             border-radius: 2px;
-            color: #7c2d12;
+        }
+
+        /* Modal Transition */
+        .modal {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Checkbox inside modal */
+        .modal-checkbox {
+            accent-color: #3b82f6;
+            width: 16px;
+            height: 16px;
+            margin-top: 3px;
+        }
+
+        /* Hidden/Block utilities for Tab switching */
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Table specific styles */
+        .pref-table th {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #475569;
+            background-color: #f8fafc;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            font-weight: 600;
+        }
+        .pref-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+            font-size: 0.875rem;
+            color: #334155;
+        }
+        .pref-table tr:last-child td {
+            border-bottom: none;
+        }
+        .pref-key {
+            font-family: monospace;
+            color: #64748b;
+            font-size: 0.8rem;
         }
     </style>
 </head>
@@ -121,440 +136,990 @@
     <div class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-20">
         <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="tabs-container flex space-x-6 overflow-x-auto whitespace-nowrap py-3">
-                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600">Client Account</a>
-                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600">Manage Users</a>
-                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600">Departments</a>
-                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600">Location</a>
-                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600">Links</a>
-                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600">Customization</a>
-                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600">Verifications</a>
-                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600">Candidates</a>
-                <a href="#" class="text-sm font-bold text-blue-600 border-b-2 border-blue-600 pb-2.5 -mb-3">Preference</a>
-                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600">ATS</a>
-                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600">Packages</a>
-                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600">Ala Carte</a>
-                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600">Integrations</a>
-                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600">Tags</a>
+                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600 tab-link" data-target="manage-users">Client Account</a>
+                <a href="#" class="text-sm font-bold text-blue-600 border-b-2 border-blue-600 pb-2.5 -mb-3 tab-link" onclick="switchTab(event, 'manage-users')">Manage Users</a>
+                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600 tab-link">Departments</a>
+                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600 tab-link">Location</a>
+                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600 tab-link">Links</a>
+                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600 tab-link">Customization</a>
+                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600 tab-link">Verifications</a>
+                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600 tab-link">Candidates</a>
+                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600 tab-link" onclick="switchTab(event, 'preference')">Preference</a>
+                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600 tab-link">ATS</a>
+                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600 tab-link">Packages</a>
+                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600 tab-link">Ala Carte</a>
+                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600 tab-link">Integrations</a>
+                <a href="#" class="text-sm font-medium text-slate-500 hover:text-blue-600 tab-link">Tags</a>
             </div>
         </div>
     </div>
 
-    <!-- Main Content -->
+    <!-- MAIN CONTAINER -->
     <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-xl font-bold text-slate-800">Configuration Buckets</h2>
-            <div class="flex gap-3">
-                 <div class="relative">
-                    <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
-                    <input type="text" id="searchInput" placeholder="Search By" class="pl-10 pr-4 py-2 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm w-64 shadow-sm">
+
+        <!-- ==================== TAB 1: MANAGE USERS ==================== -->
+        <div id="manage-users" class="tab-content active">
+            <!-- Filter Bar -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 mb-6 flex justify-between items-center">
+                <div class="flex items-center gap-3 w-1/2">
+                    <span class="text-sm font-medium text-slate-600">Filter:</span>
+                    <div class="relative w-full max-w-md">
+                        <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" placeholder="Search Name" class="pl-10 pr-4 py-2 bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm w-full">
+                    </div>
                 </div>
-                <button id="saveAllBtn" class="bg-slate-800 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-slate-700 shadow-sm transition-colors duration-200">
-                    <i class="fa-solid fa-floppy-disk mr-2"></i>Save All Changes
+                <button class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 shadow-sm">
+                    New User
                 </button>
+            </div>
+
+            <!-- Users Table -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <table class="w-full text-sm text-left text-slate-600">
+                    <thead class="text-xs text-slate-700 uppercase bg-slate-50 border-b border-slate-200">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 w-10">#</th>
+                            <th scope="col" class="px-6 py-3">User</th>
+                            <th scope="col" class="px-6 py-3">Allowed Actions</th>
+                            <th scope="col" class="px-6 py-3">Locations</th>
+                            <th scope="col" class="px-6 py-3">Departments</th>
+                            <th scope="col" class="px-6 py-3">Email</th>
+                            <th scope="col" class="px-6 py-3">Role</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        <tr class="hover:bg-slate-50">
+                            <td class="px-6 py-4">1</td>
+                            <td class="px-6 py-4 font-medium text-slate-900">Jude Mmereole</td>
+                            <td class="px-6 py-4">
+                                <button onclick="openModal('Jude Mmereole')" class="text-blue-600 hover:text-blue-800 font-medium border-b border-dotted border-blue-600 hover:border-blue-800">
+                                    Edit Actions
+                                </button>
+                            </td>
+                            <td class="px-6 py-4 text-xs">Corporate, New York, San Fran...</td>
+                            <td class="px-6 py-4">Talent Acquisition</td>
+                            <td class="px-6 py-4">jmmereole@auto.com</td>
+                            <td class="px-6 py-4">Super Admin</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="px-6 py-4">2</td>
+                            <td class="px-6 py-4 font-medium text-slate-900">Sarah Connor</td>
+                            <td class="px-6 py-4">
+                                <button onclick="openModal('Sarah Connor')" class="text-blue-600 hover:text-blue-800 font-medium border-b border-dotted border-blue-600 hover:border-blue-800">
+                                    Edit Actions
+                                </button>
+                            </td>
+                            <td class="px-6 py-4 text-xs">Los Angeles, Cyberdyne HQ</td>
+                            <td class="px-6 py-4">Operations</td>
+                            <td class="px-6 py-4">sarah@auto.com</td>
+                            <td class="px-6 py-4">Admin</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="px-6 py-4">3</td>
+                            <td class="px-6 py-4 font-medium text-slate-900">Kyle Reese</td>
+                            <td class="px-6 py-4">
+                                <button onclick="openModal('Kyle Reese')" class="text-blue-600 hover:text-blue-800 font-medium border-b border-dotted border-blue-600 hover:border-blue-800">
+                                    Edit Actions
+                                </button>
+                            </td>
+                            <td class="px-6 py-4 text-xs">Field Ops</td>
+                            <td class="px-6 py-4">Security</td>
+                            <td class="px-6 py-4">kyle@auto.com</td>
+                            <td class="px-6 py-4">Basic User</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="p-4 border-t border-slate-200 bg-slate-50 flex justify-between items-center text-xs text-slate-500">
+                    <span>Showing 1 to 3 of 3 entries</span>
+                    <div class="flex gap-1">
+                        <button class="px-2 py-1 border border-slate-300 rounded bg-white hover:bg-slate-50">Previous</button>
+                        <button class="px-2 py-1 border border-slate-300 rounded bg-blue-50 text-blue-600">1</button>
+                        <button class="px-2 py-1 border border-slate-300 rounded bg-white hover:bg-slate-50">Next</button>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Vertical Stack -->
-        <div class="flex flex-col gap-6" id="bucketsContainer">
-
-            <!-- BUCKET 1: APPLICANT JOURNEY & CANDIDATE MANAGEMENT -->
-            <div class="bucket-card bg-white rounded-xl shadow-sm border border-slate-200">
-                <div class="p-4 border-b border-slate-100 bg-slate-50 flex items-center gap-3">
-                    <div class="section-header-icon bg-blue-100 text-blue-600"><i class="fa-solid fa-user-check"></i></div>
-                    <h3 class="font-bold text-slate-800">1. Applicant Journey & Candidate Management</h3>
-                </div>
-                <div class="p-5">
-                    <!-- Permissions -->
-                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Allowed Actions</h4>
-                    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-4 mb-6">
-                        <!-- Perm Items -->
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Export Candidates</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Add Candidate</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Applicant Actions</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Applicant Activity</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Applicant Profile</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Verified Profile</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Withdraw/Re-activate</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Edit Custom Field</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Add Tags</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Assignee</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Candidate Listing</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Customize Verifs</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Default ATS User</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Kiosk Mode</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Manage Direct Link</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Add Addt'l Address</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Add Mock Data</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+        <!-- ==================== TAB 2: PREFERENCE ==================== -->
+        <div id="preference" class="tab-content">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold text-slate-800">System Preferences</h2>
+                <div class="flex items-center gap-3">
+                     <div class="relative">
+                        <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" placeholder="Search By: Preference Name" class="pl-10 pr-4 py-2 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm w-64 shadow-sm">
                     </div>
-
-                    <!-- Preferences -->
-                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 border-t border-slate-100 pt-3">Preferences</h4>
-                    <div class="space-y-3">
-                        <!-- Pref Row -->
-                        <div class="grid grid-cols-12 gap-4 items-center pref-row">
-                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Client Email Comm.</div>
-                            <div class="col-span-5">
-                                <select disabled class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"><option>Yes</option><option>No</option></select>
-                            </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
-                        </div>
-                        <div class="grid grid-cols-12 gap-4 items-center pref-row">
-                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">SSN Exception Alert</div>
-                            <div class="col-span-5">
-                                <select disabled class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"><option>Select...</option><option>Yes</option><option>No</option></select>
-                            </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
-                        </div>
-                        <div class="grid grid-cols-12 gap-4 items-center pref-row">
-                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Onboarding Notification</div>
-                            <div class="col-span-5">
-                                <select disabled class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"><option>Select...</option><option>Yes</option><option>No</option></select>
-                            </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
-                        </div>
-                        <div class="grid grid-cols-12 gap-4 items-center pref-row">
-                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Candidate Survey</div>
-                            <div class="col-span-5">
-                                <select disabled class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"><option>Yes</option><option>No</option></select>
-                            </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
-                        </div>
-                        <div class="grid grid-cols-12 gap-4 items-center pref-row">
-                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Custom Defined Field</div>
-                            <div class="col-span-5">
-                                <input disabled type="text" placeholder="Blank" class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
-                            </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
-                        </div>
-                         <div class="grid grid-cols-12 gap-4 items-center pref-row">
-                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Form I-9 Preference</div>
-                            <div class="col-span-5">
-                                <select disabled class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"><option>Mandatory</option><option>Optional</option><option>Hide</option></select>
-                            </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
-                        </div>
-                    </div>
+                    <button id="saveAllBtn" class="bg-slate-800 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-slate-700 shadow-sm transition-colors duration-200">
+                        <i class="fa-solid fa-floppy-disk mr-2"></i>Save All Changes
+                    </button>
                 </div>
             </div>
 
-            <!-- BUCKET 2: HEALTH & SCREENING -->
-            <div class="bucket-card bg-white rounded-xl shadow-sm border border-slate-200">
-                <div class="p-4 border-b border-slate-100 bg-slate-50 flex items-center gap-3">
-                    <div class="section-header-icon bg-emerald-100 text-emerald-600"><i class="fa-solid fa-heart-pulse"></i></div>
-                    <h3 class="font-bold text-slate-800">2. Health & Screening (OHS/Labs/Drug)</h3>
+            <div class="flex flex-col gap-8">
+
+                <!-- 1. Applicant Journey & Candidate Mgmt -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-4 bg-slate-50 border-b border-slate-200 flex items-center gap-2">
+                         <div class="section-header-icon bg-blue-100 text-blue-600 h-8 w-8 rounded flex items-center justify-center"><i class="fa-solid fa-user-check"></i></div>
+                        <h3 class="font-bold text-slate-800">1. Applicant Journey & Candidate Management</h3>
+                    </div>
+                    <table class="w-full text-left pref-table">
+                        <thead>
+                            <tr>
+                                <th class="w-1/6">Preference Key</th>
+                                <th class="w-1/4">Preference Name</th>
+                                <th class="w-1/3">Description</th>
+                                <th class="w-1/4">Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="pref-row">
+                                <td class="pref-key">client_email_communication</td>
+                                <td class="font-medium">Send Emails to Client Users</td>
+                                <td class="text-slate-500 text-xs">Default value is YES. Sends emails to client user who placed order.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <select disabled class="w-full text-sm border border-slate-300 rounded p-1.5"><option>Yes</option><option>No</option></select>
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="pref-row">
+                                <td class="pref-key">ssn_exception_client_alert</td>
+                                <td class="font-medium">SSN Exception Client Alert</td>
+                                <td class="text-slate-500 text-xs">Default NULL. If Yes, client gets alert for SSN exception and update option.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <select disabled class="w-full text-sm border border-slate-300 rounded p-1.5"><option>Select...</option><option>Yes</option><option>No</option></select>
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="pref-row">
+                                <td class="pref-key">onboarding_notification</td>
+                                <td class="font-medium">Onboarding Notification</td>
+                                <td class="text-slate-500 text-xs">Default NULL. If YES, enables onboarding notifications.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <select disabled class="w-full text-sm border border-slate-300 rounded p-1.5"><option>Select...</option><option>Yes</option><option>No</option></select>
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                             <tr class="pref-row">
+                                <td class="pref-key">enable_candidate_survey</td>
+                                <td class="font-medium">Enable Candidate Survey</td>
+                                <td class="text-slate-500 text-xs">Default Yes. Sends survey email & SMS to candidates.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <select disabled class="w-full text-sm border border-slate-300 rounded p-1.5"><option>Yes</option><option>No</option></select>
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="pref-row">
+                                <td class="pref-key">custom_defined_field</td>
+                                <td class="font-medium">Define Client Defined Field</td>
+                                <td class="text-slate-500 text-xs">Clients can define their own custom field (e.g., Placement ID, Employer ID).</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <input disabled type="text" placeholder="Blank" class="w-full text-sm border border-slate-300 rounded p-1.5">
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="pref-row">
+                                <td class="pref-key">cdf_ats_id</td>
+                                <td class="font-medium">Map Client Defined Field To</td>
+                                <td class="text-slate-500 text-xs">Maps custom field to ATS. Default value is Internal.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <input disabled type="text" value="Internal" class="w-full text-sm border border-slate-300 rounded p-1.5">
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="pref-row">
+                                <td class="pref-key">idv_review_needed_notify</td>
+                                <td class="font-medium">IDV: Review Needed Notification</td>
+                                <td class="text-slate-500 text-xs">When Yes, sends email notification for IDV Review Needed. Default No.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <select disabled class="w-full text-sm border border-slate-300 rounded p-1.5"><option>Yes</option><option selected>No</option></select>
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                             <tr class="pref-row">
+                                <td class="pref-key">idv_fail_notify</td>
+                                <td class="font-medium">IDV Fail Notification</td>
+                                <td class="text-slate-500 text-xs">When Yes, sends email notification for IDV Fail. Default No.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <select disabled class="w-full text-sm border border-slate-300 rounded p-1.5"><option>Yes</option><option selected>No</option></select>
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                             <tr class="pref-row">
+                                <td class="pref-key">rolling_results</td>
+                                <td class="font-medium">Enable Rolling Results</td>
+                                <td class="text-slate-500 text-xs">When Yes, sub-order results appear in real-time. Default No.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <select disabled class="w-full text-sm border border-slate-300 rounded p-1.5"><option>Yes</option><option selected>No</option></select>
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                             <tr class="pref-row">
+                                <td class="pref-key">enable_client_facing_notes</td>
+                                <td class="font-medium">Researcher Notes for Verifications</td>
+                                <td class="text-slate-500 text-xs">When Yes, client sees researcher notes for Education/Employment/References. Default No.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <select disabled class="w-full text-sm border border-slate-300 rounded p-1.5"><option>Yes</option><option selected>No</option></select>
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="pref-row">
+                                <td class="pref-key">name_searched</td>
+                                <td class="font-medium">Display names in SSN Trace</td>
+                                <td class="text-slate-500 text-xs">Default No. When Yes, SSN trace details will show names and jurisdictions.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <select disabled class="w-full text-sm border border-slate-300 rounded p-1.5"><option>Yes</option><option selected>No</option></select>
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div class="p-5">
-                    <!-- Permissions -->
-                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Allowed Actions</h4>
-                    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-4 mb-6">
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Add Clinic Pref v2</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Modify Health Order</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">OHS Map View</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">OHS OneService</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">View Health Details</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Update Drug Results</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Supplies & Shipping</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                         <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">View Prices</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
+
+                <!-- 2. Health & Screening -->
+                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-4 bg-slate-50 border-b border-slate-200 flex items-center gap-2">
+                         <div class="section-header-icon bg-emerald-100 text-emerald-600 h-8 w-8 rounded flex items-center justify-center"><i class="fa-solid fa-heart-pulse"></i></div>
+                        <h3 class="font-bold text-slate-800">2. Health & Screening</h3>
+                    </div>
+                    <table class="w-full text-left pref-table">
+                        <thead>
+                            <tr>
+                                <th class="w-1/6">Preference Key</th>
+                                <th class="w-1/4">Preference Name</th>
+                                <th class="w-1/3">Description</th>
+                                <th class="w-1/4">Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                             <tr class="pref-row">
+                                <td class="pref-key">preference_phone</td>
+                                <td class="font-medium">Add Support Phone Number</td>
+                                <td class="text-slate-500 text-xs">Default Blank. Phone number will be updated in client portal.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <input disabled type="text" placeholder="(555) 000-0000" class="w-full text-sm border border-slate-300 rounded p-1.5">
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="pref-row">
+                                <td class="pref-key">location_preference_occhealth</td>
+                                <td class="font-medium">Location for Health Screening</td>
+                                <td class="text-slate-500 text-xs">Default 'Candidate'. Determines logic for picking location.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <select disabled class="w-full text-sm border border-slate-300 rounded p-1.5"><option>Candidate</option><option>Client</option></select>
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="pref-row">
+                                <td class="pref-key">preference_occhealth_flag</td>
+                                <td class="font-medium">Health Screening Flags</td>
+                                <td class="text-slate-500 text-xs">Default NULL. If Yes, client can add flag for Health Screening checks.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <select disabled class="w-full text-sm border border-slate-300 rounded p-1.5"><option>Yes</option><option selected>No</option></select>
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                             <tr class="pref-row">
+                                <td class="pref-key">health_screening_donor_expiry</td>
+                                <td class="font-medium">Health Screening Donor Pass Expiry</td>
+                                <td class="text-slate-500 text-xs">Default '5 days'. Donor pass expires after selected days (1-90).</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                         <input disabled type="number" value="5" class="w-full text-sm border border-slate-300 rounded p-1.5">
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="pref-row">
+                                <td class="pref-key">ohs_lab_search_radius</td>
+                                <td class="font-medium">Distance for applicants to visit labs</td>
+                                <td class="text-slate-500 text-xs">Radius for OCC Health clinic search distance (1–100 miles). Default 50 miles.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                         <input disabled type="number" value="50" class="w-full text-sm border border-slate-300 rounded p-1.5">
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="pref-row">
+                                <td class="pref-key">ohs_multi_location</td>
+                                <td class="font-medium">Multiple clinic preference</td>
+                                <td class="text-slate-500 text-xs">Client preference to send applicant to multiple or single locations. Default Yes.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <select disabled class="w-full text-sm border border-slate-300 rounded p-1.5"><option>Yes</option><option>No</option></select>
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                             <tr class="pref-row">
+                                <td class="pref-key">out_network_allowed</td>
+                                <td class="font-medium">Out of network vendors preference</td>
+                                <td class="text-slate-500 text-xs">High-cost or out-of-network vendor preference. Default Yes.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <select disabled class="w-full text-sm border border-slate-300 rounded p-1.5"><option>Yes</option><option>No</option></select>
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="pref-row">
+                                <td class="pref-key">alert_about_donor_pass_expiry</td>
+                                <td class="font-medium">Donor Pass Expiry Reminder</td>
+                                <td class="text-slate-500 text-xs">Default No. Sends reminders 48 & 24 hours before donor pass expiry.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <select disabled class="w-full text-sm border border-slate-300 rounded p-1.5"><option>Yes</option><option selected>No</option></select>
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="pref-row">
+                                <td class="pref-key">escreen_override</td>
+                                <td class="font-medium">Escreen Override options</td>
+                                <td class="text-slate-500 text-xs">Override options for split checks with combined order.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <input disabled type="text" placeholder="None" class="w-full text-sm border border-slate-300 rounded p-1.5">
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="pref-row">
+                                <td class="pref-key">clinic_prefered</td>
+                                <td class="font-medium">Client Clinic Preference</td>
+                                <td class="text-slate-500 text-xs">Default clinic preference. Default: Vetty Clinics.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <input disabled type="text" value="Vetty Clinics" class="w-full text-sm border border-slate-300 rounded p-1.5">
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="pref-row">
+                                <td class="pref-key">escreen_override_applicant</td>
+                                <td class="font-medium">Escreen Override for Applicants</td>
+                                <td class="text-slate-500 text-xs">Override options for applicant Escreen flow.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <input disabled type="text" placeholder="None" class="w-full text-sm border border-slate-300 rounded p-1.5">
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="pref-row">
+                                <td class="pref-key">escreen_flow_control</td>
+                                <td class="font-medium">Escreen flow [SSO/API] controls</td>
+                                <td class="text-slate-500 text-xs">Escreen has SSO & API flows. Default: API.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <select disabled class="w-full text-sm border border-slate-300 rounded p-1.5"><option>API</option><option>SSO</option></select>
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="pref-row">
+                                <td class="pref-key">new_async_oneservice</td>
+                                <td class="font-medium">Async One Service</td>
+                                <td class="text-slate-500 text-xs">Enable asynchronous one service to speed up lab search. Default No.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <select disabled class="w-full text-sm border border-slate-300 rounded p-1.5"><option>Yes</option><option selected>No</option></select>
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                             <tr class="pref-row">
+                                <td class="pref-key">sns_modify_options</td>
+                                <td class="font-medium">Modify Supply & Shipping Option</td>
+                                <td class="text-slate-500 text-xs">Modify and add new check to have supply & shipping options.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <select disabled class="w-full text-sm border border-slate-300 rounded p-1.5"><option>Yes</option><option selected>No</option></select>
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 3. Analytics & Reporting -->
+                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-4 bg-slate-50 border-b border-slate-200 flex items-center gap-2">
+                         <div class="section-header-icon bg-purple-100 text-purple-600 h-8 w-8 rounded flex items-center justify-center"><i class="fa-solid fa-chart-pie"></i></div>
+                        <h3 class="font-bold text-slate-800">3. Analytics & Reporting</h3>
+                    </div>
+                    <table class="w-full text-left pref-table">
+                        <thead>
+                            <tr>
+                                <th class="w-1/6">Preference Key</th>
+                                <th class="w-1/4">Preference Name</th>
+                                <th class="w-1/3">Description</th>
+                                <th class="w-1/4">Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="pref-row">
+                                <td class="pref-key">enable_background_screening_report</td>
+                                <td class="font-medium">Enable Background Screening Report</td>
+                                <td class="text-slate-500 text-xs">Default No. When Yes, report download button appears in client report section.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <select disabled class="w-full text-sm border border-slate-300 rounded p-1.5"><option>Yes</option><option selected>No</option></select>
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="pref-row">
+                                <td class="pref-key">enable_check_status_report</td>
+                                <td class="font-medium">Enable Check Status Report</td>
+                                <td class="text-slate-500 text-xs">When Yes, users can download check status report when checks complete.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <select disabled class="w-full text-sm border border-slate-300 rounded p-1.5"><option>Yes</option><option selected>No</option></select>
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                             <tr class="pref-row">
+                                <td class="pref-key">detail_status_report</td>
+                                <td class="font-medium">Enable detailed status report</td>
+                                <td class="text-slate-500 text-xs">When Yes, users can download detailed status report. Default No.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <select disabled class="w-full text-sm border border-slate-300 rounded p-1.5"><option>Yes</option><option selected>No</option></select>
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="pref-row">
+                                <td class="pref-key">advance_cdashboard</td>
+                                <td class="font-medium">Advanced Client Dashboard</td>
+                                <td class="text-slate-500 text-xs">Enable advanced dashboard. Default No.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <select disabled class="w-full text-sm border border-slate-300 rounded p-1.5"><option>Yes</option><option selected>No</option></select>
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 4. Compliance & Legal -->
+                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-4 bg-slate-50 border-b border-slate-200 flex items-center gap-2">
+                         <div class="section-header-icon bg-amber-100 text-amber-600 h-8 w-8 rounded flex items-center justify-center"><i class="fa-solid fa-scale-balanced"></i></div>
+                        <h3 class="font-bold text-slate-800">4. Compliance & Legal</h3>
+                    </div>
+                    <table class="w-full text-left pref-table">
+                        <thead>
+                            <tr>
+                                <th class="w-1/6">Preference Key</th>
+                                <th class="w-1/4">Preference Name</th>
+                                <th class="w-1/3">Description</th>
+                                <th class="w-1/4">Value</th>
+                            </tr>
+                        </thead>
+                         <tbody>
+                             <tr class="pref-row">
+                                <td class="pref-key">preference_email</td>
+                                <td class="font-medium">Add Support Email ID</td>
+                                <td class="text-slate-500 text-xs">Default support@vetty.co. All supported emails will be sent to this ID.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <input disabled type="email" value="support@vetty.co" class="w-full text-sm border border-slate-300 rounded p-1.5">
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="pref-row">
+                                <td class="pref-key">show_death_master_file_flag</td>
+                                <td class="font-medium">Show Death Master File Flag</td>
+                                <td class="text-slate-500 text-xs">Default No. If Yes, Researcher will send Death Master File flag's value to Client via Notes.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <select disabled class="w-full text-sm border border-slate-300 rounded p-1.5"><option>Yes</option><option selected>No</option></select>
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                             <tr class="pref-row">
+                                <td class="pref-key">share_address_alias_customer</td>
+                                <td class="font-medium">Alias Address to be shared</td>
+                                <td class="text-slate-500 text-xs">Default No. If Yes, Researcher will send Alias Address (City, County, State) to Client via Notes.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <select disabled class="w-full text-sm border border-slate-300 rounded p-1.5"><option>Yes</option><option selected>No</option></select>
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="pref-row">
+                                <td class="pref-key">enable_1service</td>
+                                <td class="font-medium">Enable 1Service</td>
+                                <td class="text-slate-500 text-xs">Default Yes. When set to Yes, 1Service enabled.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <select disabled class="w-full text-sm border border-slate-300 rounded p-1.5"><option>Yes</option><option>No</option></select>
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                             <tr class="pref-row">
+                                <td class="pref-key">form_i9_employee_preference</td>
+                                <td class="font-medium">Form I-9 Employee Preference</td>
+                                <td class="text-slate-500 text-xs">Form I-9 Acceptable Documents Upload Preference. Default: Mandatory.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <select disabled class="w-full text-sm border border-slate-300 rounded p-1.5"><option>Mandatory</option><option>Optional</option><option>Hide</option></select>
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                             <tr class="pref-row">
+                                <td class="pref-key">display_address_history_in_ssn</td>
+                                <td class="font-medium">Display Address History in SSN</td>
+                                <td class="text-slate-500 text-xs">When Yes, researchers can add address history in SSN. Default No.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <select disabled class="w-full text-sm border border-slate-300 rounded p-1.5"><option>Yes</option><option selected>No</option></select>
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                 <!-- 5. Billing & Finance -->
+                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-4 bg-slate-50 border-b border-slate-200 flex items-center gap-2">
+                         <div class="section-header-icon bg-green-100 text-green-600 h-8 w-8 rounded flex items-center justify-center"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                        <h3 class="font-bold text-slate-800">5. Billing & Finance</h3>
+                    </div>
+                    <table class="w-full text-left pref-table">
+                        <thead>
+                            <tr>
+                                <th class="w-1/6">Preference Key</th>
+                                <th class="w-1/4">Preference Name</th>
+                                <th class="w-1/3">Description</th>
+                                <th class="w-1/4">Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="pref-row">
+                                <td class="pref-key">invoice_mail_attachment</td>
+                                <td class="font-medium">Invoice Mail Attachment</td>
+                                <td class="text-slate-500 text-xs">Default Blank. Select preferred attachments.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <select disabled class="w-full text-sm border border-slate-300 rounded p-1.5"><option>Blank</option><option>Package</option><option>Summary</option><option>Both</option></select>
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="pref-row">
+                                <td class="pref-key">candidate_charge_table</td>
+                                <td class="font-medium">Show Charge Table in Client VP</td>
+                                <td class="text-slate-500 text-xs">Displays charge table in client dashboard. Default No.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <select disabled class="w-full text-sm border border-slate-300 rounded p-1.5"><option>Yes</option><option selected>No</option></select>
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 6. User Management & System -->
+                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-4 bg-slate-50 border-b border-slate-200 flex items-center gap-2">
+                         <div class="section-header-icon bg-indigo-100 text-indigo-600 h-8 w-8 rounded flex items-center justify-center"><i class="fa-solid fa-users-gear"></i></div>
+                        <h3 class="font-bold text-slate-800">6. User Management & System</h3>
+                    </div>
+                     <table class="w-full text-left pref-table">
+                        <thead>
+                            <tr>
+                                <th class="w-1/6">Preference Key</th>
+                                <th class="w-1/4">Preference Name</th>
+                                <th class="w-1/3">Description</th>
+                                <th class="w-1/4">Value</th>
+                            </tr>
+                        </thead>
+                         <tbody>
+                             <tr class="pref-row">
+                                <td class="pref-key">preference_admin_email_note</td>
+                                <td class="font-medium">Admin Email Note Flag</td>
+                                <td class="text-slate-500 text-xs">Default Yes. If True, selected client users receive note sent by researcher/client.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <select disabled class="w-full text-sm border border-slate-300 rounded p-1.5"><option selected>Yes</option><option>No</option></select>
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="pref-row">
+                                <td class="pref-key">preference_tags</td>
+                                <td class="font-medium">Preference Tags</td>
+                                <td class="text-slate-500 text-xs">Default NULL. If YES, enables 10 default tags.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <select disabled class="w-full text-sm border border-slate-300 rounded p-1.5"><option>Yes</option><option selected>No</option></select>
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Add</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="pref-row">
+                                <td class="pref-key">client_left_menu_panel</td>
+                                <td class="font-medium">New Client Left Panel</td>
+                                <td class="text-slate-500 text-xs">Enable new client left navigation panel. Default No.</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <select disabled class="w-full text-sm border border-slate-300 rounded p-1.5"><option>Yes</option><option selected>No</option></select>
+                                        <button class="text-sm text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ==================== MODAL (ALLOWED ACTIONS) ==================== -->
+    <div id="actionModal" class="modal fixed inset-0 z-50 flex items-center justify-center bg-slate-900 bg-opacity-50 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-5xl h-[90vh] rounded-xl shadow-2xl flex flex-col">
+            
+            <!-- Modal Header -->
+            <div class="p-5 border-b border-slate-200 flex justify-between items-center bg-slate-50 rounded-t-xl">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-800">Allowed Actions</h2>
+                    <p class="text-xs text-slate-500">Editing permissions for: <span id="modalUserName" class="font-semibold text-blue-600">User Name</span></p>
+                </div>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 transition">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body (Scrollable) -->
+            <div class="flex-1 overflow-y-auto p-6 bg-slate-50">
+                
+                <!-- Search within Modal -->
+                <div class="mb-6 relative">
+                    <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" id="modalSearch" placeholder="Search permissions..." class="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm text-sm">
+                </div>
+
+                <!-- Permission Buckets Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                    <!-- Bucket 1: Applicant Journey -->
+                    <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200 h-fit">
+                        <h4 class="font-bold text-slate-700 text-sm border-b border-slate-100 pb-2 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-user-check text-blue-500"></i> Applicant Journey
+                        </h4>
+                        <div class="space-y-2 text-xs text-slate-600">
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Permission Export Candidates</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Add Candidate</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Add Additional Address</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Add Note</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Add mock data</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Add or edit client defined field</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Add tags</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Applicant Withdrawn and Re-activated</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Applicant actions</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Applicant activity feed</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Applicant profile</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Applicant verified profile</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Assignee</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Candidate listing</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Customize Verifications</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Default ATS User</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Kiosk for Candidate</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Manage Direct Link</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: View DOB</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: View SSN</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Res: View client's applicant details page</span></div>
+                        </div>
                     </div>
 
-                    <!-- Preferences -->
-                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 border-t border-slate-100 pt-3">Preferences</h4>
-                    <div class="space-y-3">
-                        <div class="grid grid-cols-12 gap-4 items-center pref-row">
-                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Support Phone</div>
-                            <div class="col-span-5">
-                                <input disabled type="text" placeholder="(555) 000-0000" class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
-                            </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
-                        </div>
-                        <div class="grid grid-cols-12 gap-4 items-center pref-row">
-                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">OccHealth Location</div>
-                            <div class="col-span-5">
-                                <select disabled class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"><option>Candidate</option><option>Client</option></select>
-                            </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
-                        </div>
-                        <div class="grid grid-cols-12 gap-4 items-center pref-row">
-                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Health Screening Flags</div>
-                            <div class="col-span-5">
-                                <select disabled class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"><option>Yes</option><option selected>No</option></select>
-                            </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
-                        </div>
-                        <div class="grid grid-cols-12 gap-4 items-center pref-row">
-                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Donor Pass Expiry</div>
-                            <div class="col-span-5">
-                                <input disabled type="number" value="5" class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
-                            </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
-                        </div>
-                         <div class="grid grid-cols-12 gap-4 items-center pref-row">
-                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Search Radius (miles)</div>
-                            <div class="col-span-5">
-                                <input disabled type="number" value="50" class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
-                            </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
-                        </div>
-                        <div class="grid grid-cols-12 gap-4 items-center pref-row">
-                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">eScreen Flow Control</div>
-                            <div class="col-span-5">
-                                <select disabled class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"><option>API</option><option>SSO</option></select>
-                            </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
+                    <!-- Bucket 2: Health & Screening -->
+                     <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200 h-fit">
+                        <h4 class="font-bold text-slate-700 text-sm border-b border-slate-100 pb-2 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-heart-pulse text-emerald-500"></i> Health & Screening
+                        </h4>
+                        <div class="space-y-2 text-xs text-slate-600">
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Add Clinic Preference v2</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Add Health Package</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Add New Check - Send Invite</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Add New Check Fill on Behalf</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Modify Health Screening Order</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: OHS clinic map view</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: OHS- one service</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Ohs Offer Active Chart</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Supplies & Shipping</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Update applicant Fingerprinting results</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Update applicant Onsite Drug results</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: View Health Screening Prices</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: View applicant Fingerprinting details</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: View applicant Health Screening check details</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: View applicant Onsite Drug Details</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: add new check</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: new design add new check</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Res: View OHS raw details</span></div>
                         </div>
                     </div>
+
+                    <!-- Bucket 3: Analytics & Reporting -->
+                     <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200 h-fit">
+                        <h4 class="font-bold text-slate-700 text-sm border-b border-slate-100 pb-2 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-chart-pie text-purple-500"></i> Analytics & Reporting
+                        </h4>
+                        <div class="space-y-2 text-xs text-slate-600">
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Chart Adjudication</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Chart Candidate Experience</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Chart Communication Effectiveness</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Chart Finance</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Chart Geography</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Chart Operational Analytics</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Chart Overview</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Full Report</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Order Status Report</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Preview report chart</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: View Historical Applicants Dashboard</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: View Stage Checks</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Res: Final Report</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Res: View Historical Researcher Dashboard</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Researcher: View Researcher Alert Dashboard</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Bucket 4: Compliance & Legal -->
+                     <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200 h-fit">
+                        <h4 class="font-bold text-slate-700 text-sm border-b border-slate-100 pb-2 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-scale-balanced text-amber-500"></i> Compliance & Legal
+                        </h4>
+                        <div class="space-y-2 text-xs text-slate-600">
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: 1Service redesign</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: 1Service redesign for ADP</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Bullhorn Intelli Order</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: I-9 Audit Trail</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Initiate adverse action</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Initiate pre-adverse/adverse action</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Inititate pre-adverse action</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Onboarding documents_Fill and Sign</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Only View Additional Documents</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Only View Criminal/Registry Docs</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Only View Demographic Documents</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Only View Dispute Documents</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Only View I-9 Documents</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Only View Legal Documents</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Only View MVR Documents</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Only View Occhealth Documents</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Only View Onboarding Documents</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Only View Verification Documents</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Only View Verified By Clients Docs</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Prove integration</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: adverse/preadverse print</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: api management list</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: api management web hook</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: ats partner integration</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: continuous monitoring</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: show archived i9 form applicants</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Res: Set dispute status</span></div>
+                        </div>
+                    </div>
+
+                     <!-- Bucket 5: Billing & Finance -->
+                     <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200 h-fit">
+                        <h4 class="font-bold text-slate-700 text-sm border-b border-slate-100 pb-2 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-file-invoice-dollar text-green-500"></i> Billing & Finance
+                        </h4>
+                        <div class="space-y-2 text-xs text-slate-600">
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Show Charge Table</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: View Annual Salary</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: View package list</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: show invoices list</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Res: Add Cost</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Res: Add discount</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Res: Delete Additional Cost</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Res: Edit Annual Salary</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Res: Invoice Dashboard</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Bucket 6: User Management -->
+                     <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200 h-fit">
+                        <h4 class="font-bold text-slate-700 text-sm border-b border-slate-100 pb-2 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-users-gear text-indigo-500"></i> User Management
+                        </h4>
+                        <div class="space-y-2 text-xs text-slate-600">
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Add/Edit Department</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: All permissions</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Customize logo</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: Setting Manage Users</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: bulk upload</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: client user event logs</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Client: customize invitation email</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Res: Edit QA Res Comment</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Res: Set Client VP Note</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Res: Set overall order status</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Res: Set individual check status</span></div>
+                             <div class="flex items-start gap-2"><input type="checkbox" class="modal-checkbox"> <span>!!_Res: Stop all notifications</span></div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
-            <!-- BUCKET 3: ANALYTICS, REPORTING & DASHBOARDING -->
-            <div class="bucket-card bg-white rounded-xl shadow-sm border border-slate-200">
-                <div class="p-4 border-b border-slate-100 bg-slate-50 flex items-center gap-3">
-                    <div class="section-header-icon bg-purple-100 text-purple-600"><i class="fa-solid fa-chart-pie"></i></div>
-                    <h3 class="font-bold text-slate-800">3. Analytics & Reporting</h3>
-                </div>
-                <div class="p-5">
-                    <!-- Permissions -->
-                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Allowed Actions</h4>
-                    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-4 mb-6">
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Chart Adjudication</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Chart Candidate Exp.</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Chart Comm. Eff.</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Chart Finance</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Chart Geography</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Chart Overview</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Order Status Report</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">View Hist. Dash</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                         <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Bullhorn Intelli</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                    </div>
-
-                    <!-- Preferences -->
-                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 border-t border-slate-100 pt-3">Preferences</h4>
-                     <div class="space-y-3">
-                        <div class="grid grid-cols-12 gap-4 items-center pref-row">
-                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">BG Report Download</div>
-                            <div class="col-span-5">
-                                <select disabled class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"><option>Yes</option><option selected>No</option></select>
-                            </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
-                        </div>
-                        <div class="grid grid-cols-12 gap-4 items-center pref-row">
-                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Check Status Report</div>
-                            <div class="col-span-5">
-                                <select disabled class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"><option>Yes</option><option selected>No</option></select>
-                            </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
-                        </div>
-                    </div>
-                </div>
+            <!-- Modal Footer -->
+            <div class="p-5 border-t border-slate-200 bg-slate-50 rounded-b-xl flex justify-end gap-3">
+                <button onclick="closeModal()" class="px-4 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition">Cancel</button>
+                <button onclick="closeModal()" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition shadow-sm">Save Permissions</button>
             </div>
-
-            <!-- BUCKET 4: COMPLIANCE, LEGAL & INTEGRATIONS -->
-            <div class="bucket-card bg-white rounded-xl shadow-sm border border-slate-200">
-                <div class="p-4 border-b border-slate-100 bg-slate-50 flex items-center gap-3">
-                    <div class="section-header-icon bg-amber-100 text-amber-600"><i class="fa-solid fa-scale-balanced"></i></div>
-                    <h3 class="font-bold text-slate-800">4. Compliance, Legal & Integrations</h3>
-                </div>
-                <div class="p-5">
-                     <!-- Permissions -->
-                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Allowed Actions</h4>
-                    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-4 mb-6">
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Initiate Adverse</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Init Pre-Adverse</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">View Only Mode</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Onboarding Docs</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Customize Invite</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">ATS Partner Int.</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">API Mgmt List</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">I-9 Audit Trail</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                    </div>
-
-                    <!-- Preferences -->
-                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 border-t border-slate-100 pt-3">Preferences</h4>
-                     <div class="space-y-3">
-                         <div class="grid grid-cols-12 gap-4 items-center pref-row">
-                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Preference Email</div>
-                            <div class="col-span-5">
-                                <input disabled type="email" value="support@vetty.co" class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
-                            </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
-                        </div>
-                        <div class="grid grid-cols-12 gap-4 items-center pref-row">
-                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Death Master Flag</div>
-                            <div class="col-span-5">
-                                <select disabled class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"><option>Yes</option><option selected>No</option></select>
-                            </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
-                        </div>
-                        <div class="grid grid-cols-12 gap-4 items-center pref-row">
-                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Share Alias Address</div>
-                            <div class="col-span-5">
-                                <select disabled class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"><option>Yes</option><option selected>No</option></select>
-                            </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- BUCKET 5: BILLING, FINANCE & PRICING -->
-             <div class="bucket-card bg-white rounded-xl shadow-sm border border-slate-200">
-                <div class="p-4 border-b border-slate-100 bg-slate-50 flex items-center gap-3">
-                    <div class="section-header-icon bg-green-100 text-green-600"><i class="fa-solid fa-file-invoice-dollar"></i></div>
-                    <h3 class="font-bold text-slate-800">5. Billing, Finance & Pricing</h3>
-                </div>
-                <div class="p-5">
-                    <!-- Permissions -->
-                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Allowed Actions</h4>
-                    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-4 mb-6">
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Show Charge Table</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">View Annual Salary</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">View Package List</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Show Invoices</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                    </div>
-
-                    <!-- Preferences -->
-                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 border-t border-slate-100 pt-3">Preferences</h4>
-                     <div class="space-y-3">
-                         <div class="grid grid-cols-12 gap-4 items-center pref-row">
-                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Invoice Mail Attach</div>
-                            <div class="col-span-5">
-                                <select disabled class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"><option>Blank</option><option>Package</option><option>Summary</option></select>
-                            </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
-                        </div>
-                        <div class="grid grid-cols-12 gap-4 items-center pref-row">
-                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Candidate Charge Table</div>
-                            <div class="col-span-5">
-                                <select disabled class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"><option>Yes</option><option selected>No</option></select>
-                            </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- BUCKET 6: USER MANAGEMENT -->
-             <div class="bucket-card bg-white rounded-xl shadow-sm border border-slate-200">
-                <div class="p-4 border-b border-slate-100 bg-slate-50 flex items-center gap-3">
-                    <div class="section-header-icon bg-indigo-100 text-indigo-600"><i class="fa-solid fa-users-gear"></i></div>
-                    <h3 class="font-bold text-slate-800">6. User Management & System</h3>
-                </div>
-                <div class="p-5">
-                    <!-- Permissions -->
-                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Allowed Actions</h4>
-                    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-4 mb-6">
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Setting Manage Users</span><input type="checkbox" class="toggle-checkbox" checked><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">Customize Logo</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">All Permissions</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                        <div class="flex items-center justify-between searchable-item"><span class="text-xs text-slate-700">1Service Redesign</span><input type="checkbox" class="toggle-checkbox"><label class="toggle-label" onclick="this.previousElementSibling.click()"></label></div>
-                    </div>
-
-                    <!-- Preferences -->
-                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 border-t border-slate-100 pt-3">Preferences</h4>
-                     <div class="space-y-3">
-                         <div class="grid grid-cols-12 gap-4 items-center pref-row">
-                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Admin Email Note</div>
-                            <div class="col-span-5">
-                                <select disabled class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"><option selected>Yes</option><option>No</option></select>
-                            </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
-                        </div>
-                        <div class="grid grid-cols-12 gap-4 items-center pref-row">
-                            <div class="col-span-5 text-xs font-medium text-slate-700 searchable-text">Preference Tags</div>
-                            <div class="col-span-5">
-                                <select disabled class="w-full text-xs border border-slate-300 rounded bg-white p-1.5 focus:ring-2 focus:ring-blue-500 focus:outline-none transition"><option>Yes</option><option selected>No</option></select>
-                            </div>
-                            <div class="col-span-2 text-right"><button class="text-xs text-blue-600 hover:text-blue-800 font-medium edit-btn">Edit</button></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
     </div>
 
     <script>
-        // --- 1. Edit/Unlock Functionality ---
+        // --- 1. Tab Switching ---
+        function switchTab(e, tabId) {
+            e.preventDefault();
+            
+            // Remove Active class from all links
+            document.querySelectorAll('.tab-link').forEach(link => {
+                link.classList.remove('font-bold', 'border-b-2', 'border-blue-600', 'pb-2.5', '-mb-3');
+                link.classList.add('text-slate-500');
+                link.classList.remove('text-blue-600');
+            });
+            
+            // Add Active class to clicked link
+            e.currentTarget.classList.add('font-bold', 'border-b-2', 'border-blue-600', 'pb-2.5', '-mb-3', 'text-blue-600');
+            e.currentTarget.classList.remove('text-slate-500');
+
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Show target tab content
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // --- 2. Edit/Unlock Functionality (Preferences) ---
         const editButtons = document.querySelectorAll('.edit-btn');
         const saveAllBtn = document.getElementById('saveAllBtn');
         
         editButtons.forEach(btn => {
             btn.addEventListener('click', function() {
-                // Find the closest parent row
                 const row = this.closest('.pref-row');
                 const input = row.querySelector('input, select');
-                
-                // Unlock for Editing
                 if (input.disabled) {
                     input.disabled = false;
                     input.focus();
-                    
-                    // Hide the Edit button while editing (per user request)
                     this.style.visibility = 'hidden'; 
                 }
             });
         });
 
-        // --- 2. Save All Changes Functionality ---
-        saveAllBtn.addEventListener('click', function() {
-            // Find all enabled inputs within pref-rows
-            const enabledInputs = document.querySelectorAll('.pref-row input:not(:disabled), .pref-row select:not(:disabled)');
-            
-            // Loop through them and lock them
-            enabledInputs.forEach(input => {
-                input.disabled = true;
+        if(saveAllBtn) {
+            saveAllBtn.addEventListener('click', function() {
+                const enabledInputs = document.querySelectorAll('.pref-row input:not(:disabled), .pref-row select:not(:disabled)');
+                enabledInputs.forEach(input => {
+                    input.disabled = true;
+                    const row = input.closest('.pref-row');
+                    const btn = row.querySelector('.edit-btn');
+                    if(btn) btn.style.visibility = 'visible';
+                });
+
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="fa-solid fa-check mr-2"></i>Saved!';
+                this.classList.remove('bg-slate-800', 'hover:bg-slate-700');
+                this.classList.add('bg-green-600', 'hover:bg-green-700');
                 
-                // Find the corresponding edit button and show it again
-                const row = input.closest('.pref-row');
-                const btn = row.querySelector('.edit-btn');
-                if(btn) {
-                    btn.style.visibility = 'visible';
-                    btn.textContent = 'Edit'; // Ensure text is reset
-                    btn.classList.remove('text-green-600', 'hover:text-green-800'); // Reset colors if changed
-                    btn.classList.add('text-blue-600', 'hover:text-blue-800');
-                }
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                    this.classList.add('bg-slate-800', 'hover:bg-slate-700');
+                    this.classList.remove('bg-green-600', 'hover:bg-green-700');
+                }, 2000);
             });
+        }
 
-            // Feedback
-            const originalText = this.innerHTML;
-            this.innerHTML = '<i class="fa-solid fa-check mr-2"></i>Saved!';
-            this.classList.remove('bg-slate-800', 'hover:bg-slate-700');
-            this.classList.add('bg-green-600', 'hover:bg-green-700');
-            
-            setTimeout(() => {
-                this.innerHTML = originalText;
-                this.classList.add('bg-slate-800', 'hover:bg-slate-700');
-                this.classList.remove('bg-green-600', 'hover:bg-green-700');
-            }, 2000);
-        });
+        // --- 3. Modal Functionality ---
+        const modal = document.getElementById('actionModal');
+        const modalUserName = document.getElementById('modalUserName');
 
-        // --- 3. Search & Highlight Functionality ---
-        const searchInput = document.getElementById('searchInput');
-        const searchItems = document.querySelectorAll('.searchable-item span, .searchable-text');
+        function openModal(userName) {
+            modalUserName.textContent = userName;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent background scroll
+        }
 
-        // Store original text to restore later
-        searchItems.forEach(el => {
-            el.dataset.originalText = el.textContent;
-        });
+        function closeModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
 
-        searchInput.addEventListener('input', function(e) {
-            const term = e.target.value.toLowerCase().trim();
-
-            searchItems.forEach(el => {
-                const originalText = el.dataset.originalText;
+        // --- 4. Search within Modal ---
+        const modalSearch = document.getElementById('modalSearch');
+        if(modalSearch) {
+            modalSearch.addEventListener('input', function(e) {
+                const term = e.target.value.toLowerCase().trim();
+                const items = document.querySelectorAll('.modal-checkbox + span');
                 
-                if (term.length > 0 && originalText.toLowerCase().includes(term)) {
-                    // Highlight Match using HTML replacement
-                    // Case insensitive regex
-                    const regex = new RegExp(`(${term})`, 'gi');
-                    el.innerHTML = originalText.replace(regex, '<span class="highlight-orange">$1</span>');
-                } else {
-                    // Restore original
-                    el.textContent = originalText;
-                }
+                items.forEach(span => {
+                    const text = span.textContent.toLowerCase();
+                    const parentDiv = span.parentElement;
+                    
+                    if (term === '' || text.includes(term)) {
+                        parentDiv.style.display = 'flex';
+                        // Highlight
+                         if (term !== '') {
+                             const regex = new RegExp(`(${term})`, 'gi');
+                             span.innerHTML = span.textContent.replace(regex, '<span class="highlight-orange">$1</span>');
+                         } else {
+                             span.innerHTML = span.textContent;
+                         }
+                    } else {
+                        parentDiv.style.display = 'none';
+                    }
+                });
             });
-        });
+        }
     </script>
 </body>
 </html>
